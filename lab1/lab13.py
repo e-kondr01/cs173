@@ -1,25 +1,29 @@
 from math import log
 from skimage.color import rgb2gray
 from skimage.io import imread
-from skimage.util import img_as_ubyte, img_as_uint, img_as_float
+from skimage.util import img_as_ubyte, img_as_float
 
 
-def count_entropy(img):
-    '''Считаем кол-во возможных вероятностей '''
-    p = set()
-    try:
-        for x in range(img.shape[0]):
-            for y in range(img.shape[1]):
-                p.add(img[x, y][0])
-                p.add(img[x, y][1])
-                p.add(img[x, y][2])
-    except IndexError:
-        for x in range(img.shape[0]):
-            for y in range(img.shape[1]):
-                p.add(img[x, y])
-    '''Пусть вероятности равновозможны '''
+def count_entropy(img, n_levels=None):
+    if not n_levels:
+        '''Считаем кол-во возможных вероятностей '''
+        p = set()
+        try:
+            for x in range(img.shape[0]):
+                for y in range(img.shape[1]):
+                    p.add(img[x, y][0])
+                    p.add(img[x, y][1])
+                    p.add(img[x, y][2])
+        except IndexError:
+            for x in range(img.shape[0]):
+                for y in range(img.shape[1]):
+                    p.add(img[x, y])
+        prob = 1 / len(p)
+    else:
+        prob = 1 / n_levels
+
     V = img.shape[0] * img.shape[1]
-    H = - (V * (1 / len(p)) * log((1 / len(p)), 2))
+    H = - (V * prob * log(prob, 2))
     return H
 
 
@@ -49,7 +53,7 @@ if __name__ == '__main__':
     img1 = img_as_ubyte(img1)
     img2 = imread('C:\cs173\lab1\\restored_img_16_levels.png')
     print('Уменьшение уровней яркости:')
-    print(count_entropy(img1), count_entropy(img2))
+    print(count_entropy(img1, n_levels=256), count_entropy(img2))
     print(count_standard_deviation(img1, img2))
 
     img3 = imread('C:\cs173\\test_image.png')
