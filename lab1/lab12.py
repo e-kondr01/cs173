@@ -20,8 +20,8 @@ def rgb_to_yuv(img):
                 average_r = average[:, :, 0]
                 average_g = average[:, :, 1]
                 average_b = average[:, :, 2]
-                u[x // 2].append(clip((-0.147 * average_r - 0.289 * average_g +
-                                 0.436 * average_b), 0, 1))
+                u[x // 2].append(-0.147 * average_r - 0.289 * average_g +
+                                 0.436 * average_b)
 
     v = []
     for x in range(img.shape[0]):
@@ -33,8 +33,8 @@ def rgb_to_yuv(img):
                 average_r = average[:, :, 0]
                 average_g = average[:, :, 1]
                 average_b = average[:, :, 2]
-                v[x // 2].append(clip((0.615 * average_r - 0.515 * average_g -
-                                 0.100 * average_b), 0, 1))
+                v[x // 2].append(0.615 * average_r - 0.515 * average_g -
+                                 0.100 * average_b)
 
     return (y_channel, u, v)
 
